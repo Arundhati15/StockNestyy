@@ -61,10 +61,6 @@ Run migrations:
 python manage.py migrate
 
 
-Create a superuser (for Django Admin):
-
-python manage.py createsuperuser
-
 
 Start the development server:
 
