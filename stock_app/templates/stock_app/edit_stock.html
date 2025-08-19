@@ -1,0 +1,18 @@
+{% extends 'stock_app/base.html' %}
+{% block title %}Edit Stock{% endblock %}
+{% block content %}
+  <div class="col-lg-6 mx-auto">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="card-title mb-3">Edit {{ stock.symbol }}</h4>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">{{ form.symbol.label_tag }} {{ form.symbol }}</div>
+          <div class="mb-3">{{ form.nickname.label_tag }} {{ form.nickname }}</div>
+          <button class="btn btn-primary" type="submit">Save</button>
+          <a class="btn btn-outline-secondary" href="{% url 'watchlist' %}">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

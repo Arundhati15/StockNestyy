@@ -1,0 +1,81 @@
+{% extends 'stock_app/base.html' %}
+{% block title %}Watchlist{% endblock %}
+{% block content %}
+  <section class="hero-mauve mb-4">
+    <div class="d-flex align-items-center justify-content-between">
+      <h3 class="mb-0">My Watchlist</h3>
+      <a class="btn btn-violet" href="{% url 'add_stock' %}">Add Stock</a>
+    </div>
+  </section>
+
+  {% if stocks %}
+    <div class="card card-glass p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" id="watchlistTable">
+          <thead class="table-light">
+            <tr>
+              <th>Symbol</th>
+              <th>Nickname</th>
+              <th class="text-end">Price</th>
+              <th class="text-end">Change</th>
+              <th class="text-end">Change %</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in stocks %}
+              <tr data-symbol="{{ s.symbol }}">
+                <td class="fw-bold">{{ s.symbol }}</td>
+                <td>{{ s.nickname }}</td>
+                <td class="text-end" id="price-{{ s.symbol|slugify }}">—</td>
+                <td class="text-end" id="chg-{{ s.symbol|slugify }}">—</td>
+                <td class="text-end" id="pct-{{ s.symbol|slugify }}">—</td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'edit_stock' s.pk %}">Edit</a>
+                  <a class="btn btn-sm btn-outline-danger" href="{% url 'delete_stock' s.pk %}">Delete</a>
+                  <a class="btn btn-sm btn-violet" href="{% url 'stock_detail' s.symbol %}">View</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-info card-glass">Your watchlist is empty. Click <b>Add Stock</b> to get started.</div>
+  {% endif %}
+
+  <script>
+    function loadQuotes() {
+      const rows = Array.from(document.querySelectorAll('#watchlistTable tbody tr'));
+      if (!rows.length) return;
+      const symbols = rows.map(r => r.dataset.symbol).join(',');
+      fetch(`/api/quotes/?symbols=${encodeURIComponent(symbols)}`)
+        .then(r => r.json())
+        .then(res => {
+          const q = res.quotes || {};
+          rows.forEach(r => {
+            const sym = r.dataset.symbol;
+            const safeId = sym.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+            const priceEl = document.getElementById(`price-${safeId}`);
+            const chgEl   = document.getElementById(`chg-${safeId}`);
+            const pctEl   = document.getElementById(`pct-${safeId}`);
+            const d = q[sym];
+
+            if (!d || d.error) { priceEl.textContent = chgEl.textContent = pctEl.textContent = '—'; return; }
+
+            priceEl.textContent = d.price.toFixed(2);
+            chgEl.textContent   = (d.change >= 0 ? '+' : '') + d.change.toFixed(2);
+            pctEl.textContent   = (d.changePct >= 0 ? '+' : '') + d.changePct.toFixed(2) + '%';
+
+            const cls = d.change >= 0 ? 'text-profit' : 'text-loss';
+            priceEl.className = `text-end ${cls}`;
+            chgEl.className   = `text-end ${cls}`;
+            pctEl.className   = `text-end ${cls}`;
+          });
+        }).catch(()=>{});
+    }
+    loadQuotes();
+    setInterval(loadQuotes, 10000);
+  </script>
+{% endblock %}

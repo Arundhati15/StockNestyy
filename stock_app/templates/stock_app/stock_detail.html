@@ -1,0 +1,83 @@
+{% extends 'stock_app/base.html' %}
+{% block title %}{{ symbol }} - Stock Details{% endblock %}
+{% block content %}
+
+<div class="container-fluid bg-dark text-light p-4" style="min-height:100vh;">
+  <div class="row mb-4">
+    <div class="col">
+      <h2 class="fw-bold">{{ symbol }}</h2>
+      <div id="price" class="display-4 fw-bold">Loading...</div>
+      <div id="change" class="fs-5">Loading...</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <canvas id="stockChart" height="120"></canvas>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const symbol = "{{ symbol }}";
+
+    // Fetch latest price
+    function fetchPrice() {
+        fetch(`/api/quotes/?symbols=${symbol}`)
+        .then(res => res.json())
+        .then(data => {
+            const q = data.quotes[symbol];
+            if (q && !q.error) {
+                document.getElementById("price").textContent = `$${q.price}`;
+                let changeEl = document.getElementById("change");
+                changeEl.textContent = `${q.change} (${q.changePct}%)`;
+
+                changeEl.classList.remove("text-success", "text-danger");
+                if (q.change > 0) changeEl.classList.add("text-success");
+                else if (q.change < 0) changeEl.classList.add("text-danger");
+            }
+        });
+    }
+
+    // Fetch historical data for chart
+    function fetchHistory() {
+        fetch(`/api/history/?symbol=${symbol}&period=1mo&interval=1d`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.error) {
+                const ctx = document.getElementById("stockChart").getContext("2d");
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates,
+                        datasets: [{
+                            label: `${symbol} Closing Price`,
+                            data: data.closes,
+                            borderColor: '#4cafef',
+                            backgroundColor: 'rgba(76, 175, 239, 0.1)',
+                            tension: 0.2,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { ticks: { color: "#ccc" } },
+                            y: { ticks: { color: "#ccc" } }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    fetchPrice();
+    fetchHistory();
+    setInterval(fetchPrice, 10000); // refresh every 10s
+});
+</script>
+
+{% endblock %}

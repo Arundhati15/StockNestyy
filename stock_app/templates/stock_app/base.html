@@ -1,0 +1,361 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}StockNestyy{% endblock %}</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Vanta.js & Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        .card-glass {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 1rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            color: black;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            border-radius: 50px;
+            background: rgba(0, 0, 0, 0.8) !important;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+        body { padding-top: 80px; }
+        .navbar-brand { font-weight: bold; font-size: 1.4rem; color: white !important; }
+        .nav-link { color: white !important; }
+
+        footer {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+            color: white;
+        }
+
+        .stats-sidebar {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 1rem;
+            border-radius: 1rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .stats-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Sticky notes */
+        .reviews {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .note {
+            width: 100px;
+            height: 100px;
+            background: #fffa90;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #333;
+            transform: rotate(-2deg);
+        }
+        .note:nth-child(2) { background: #aaf0d1; transform: rotate(3deg); }
+        .note:nth-child(3) { background: #ffb6b9; transform: rotate(-1deg); }
+        .note:nth-child(4) { background: #b5d8ff; transform: rotate(2deg); }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+    </style>
+</head>
+<body id="vanta-bg">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">StockNestyy</a>
+            <span class="tagline text-light">Your cozy place for smart stock tracking</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact-bottom">Contact</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signup' %}">Signup</a>
+                        </li>
+                    {% endif %}
+
+                    <!--{% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    {% endif %}-->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Layout -->
+    <div class="container my-4" style="position: relative; z-index: 1;">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                {% block content %}
+                <div class="card-glass p-3 mb-4">
+                    <h3>Quick Quote</h3>
+                    <input type="text" id="symbol-input" class="form-control mb-2" placeholder="Enter stock symbol (e.g., AAPL)">
+                    <button class="btn btn-dark" onclick="updateLiveStats()">Get Price</button>
+                </div>
+
+                <section id="about" class="card-glass p-3 mb-4">
+                    <h3>About StockNestyy</h3>
+                    <p>StockNestyy helps you keep a close eye on your favorite stocks with a cozy, intuitive interface. Track, manage, and make informed decisions — all in one nest.</p>
+                </section>
+
+                <section id="contact-bottom" class="card-glass p-3 mb-4">
+                    <h3>Contact Us</h3>
+                    <p>Email: support@stocknestyy.com</p>
+                </section>
+
+                
+                {% endblock %}
+            </div>
+            <!-- Right Sidebar -->
+            <div class="col-lg-4">
+
+                <!-- Live Stock Stats -->
+                <div class="stats-sidebar">
+                    <h5>📊 Live Stock Stats</h5>
+                    <div class="stats-item" id="stock-AAPL">AAPL - $0.00</div>
+                    <div class="stats-item" id="stock-GOOGL">GOOGL - $0.00</div>
+                    <div class="stats-item" id="stock-MSFT">MSFT - $0.00</div>
+                    <div class="stats-item" id="stock-TSLA">TSLA - $0.00</div>
+                    <div class="stats-item" id="stock-AMZN">AMZN - $0.00</div>
+                </div>
+
+                <!-- Market News -->
+                <!--<div class="stats-sidebar">
+                    <h5>📰 Market News</h5>
+                    <div class="stats-item">Tech stocks rally amid earnings optimism</div>
+                    <div class="stats-item">Oil prices hit 3-month high</div>
+                    <div class="stats-item">US inflation data due tomorrow</div>
+                </div>-->
+                                    <div class="stats-sidebar">
+                        <h5>📰 Market News</h5>
+                        <div id="news-container"></div>
+                    </div>
+
+                    <script>
+                    const newsHeadlines = [
+                        "Tech stocks rally amid earnings optimism",
+                        "Oil prices hit 3-month high",
+                        "US inflation data due tomorrow",
+                        "Global markets steady as investors eye Fed",
+                        "Gold edges higher on safe-haven demand",
+                    ];
+
+                    function updateNews() {
+                        const container = document.getElementById("news-container");
+                        container.innerHTML = ""; // clear old
+                        // show 3 random headlines
+                        const shuffled = newsHeadlines.sort(() => 0.5 - Math.random());
+                        shuffled.slice(0, 3).forEach(headline => {
+                            const div = document.createElement("div");
+                            div.className = "stats-item";
+                            div.textContent = headline;
+                            container.appendChild(div);
+                        });
+                    }
+
+                    setInterval(updateNews, 5000); // refresh every 5 sec
+                    updateNews(); // first load
+                    </script>
+
+
+                <!-- Reviews (keep sticky notes style!) -->
+                <div class="stats-sidebar">
+                    <h5>💬 Reviews</h5>
+                    <div class="reviews">
+                        <div class="note">Love the design!</div>
+                        <div class="note">Easy to use</div>
+                        <div class="note">Accurate data</div>
+                        <div class="note">My go-to tracker</div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            
+            <!-- Right Sidebar--> 
+            <!--<div class="col-lg-4">-->
+                <!-- Live Stock Stats -->
+                <!--<div class="card mb-3">
+                    <div class="card-header">📊 Live Stock Stats</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" id="stock-AAPL">AAPL - $0.00</li>
+                        <li class="list-group-item" id="stock-GOOGL">GOOGL - $0.00</li>
+                        <li class="list-group-item" id="stock-MSFT">MSFT - $0.00</li>
+                        <li class="list-group-item" id="stock-TSLA">TSLA - $0.00</li>
+                        <li class="list-group-item" id="stock-AMZN">AMZN - $0.00</li>
+                    </ul>
+                </div>-->
+               
+
+                <!-- News -->
+                <!--<div class="stats-sidebar">
+                    <h5>📰 Market News</h5>
+                    <div class="stats-item">Tech stocks rally amid earnings optimism</div>
+                    <div class="stats-item">Oil prices hit 3-month high</div>
+                    <div class="stats-item">US inflation data due tomorrow</div>
+                </div>-->
+
+                <!-- Reviews -->
+                <!--<div class="stats-sidebar">
+                    <h5>💬 Reviews</h5>
+                    <div class="reviews">
+                        <div class="note">Love the design!</div>
+                        <div class="note">Easy to use</div>
+                        <div class="note">Accurate data</div>
+                        <div class="note">My go-to tracker</div>
+                    </div>
+                </div>
+            </div>-->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2025 StockNestyy. All rights reserved.
+    </footer>
+
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Vanta.js -->
+    <script>
+        VANTA.FOG({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            highlightColor: 0xff00d3,
+            midtoneColor: 0xff00f2,
+            lowlightColor: 0x8aeded,
+            blurFactor: 0.51
+        })
+    </script>
+
+        <!-- Stock Fetch Script -->
+        <script>
+            const symbols = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"];
+
+            async function updateLiveStats() {
+                for (let symbol of symbols) {
+                    try {
+                        const res = await fetch(`/get_stock_data?symbol=${symbol}`);
+                        const data = await res.json();
+
+                        if (data.error) {
+                            document.getElementById(`stock-${symbol}`).innerText = `${symbol} - Error`;
+                            continue;
+                        }
+
+                        document.getElementById(`stock-${symbol}`).innerText =
+                            `${data.symbol} - $${data.price}`;
+                    } catch (err) {
+                        console.error("Fetch error for", symbol, err);
+                    }
+                }
+            }
+
+            updateLiveStats();
+            setInterval(updateLiveStats, 60000);
+        </script>
+
+
+            <script>
+        async function getQuickQuote() {
+            const symbol = document.getElementById("symbol-input").value.trim();
+            const resultDiv = document.getElementById("quote-result");
+
+            if (!symbol) {
+                resultDiv.innerHTML = "<span class='text-danger'>⚠ Please enter a stock symbol.</span>";
+                return;
+            }
+
+            try {
+                const res = await fetch(`/quick_quote?symbol=${symbol}`);
+                const data = await res.json();
+
+                if (data.error) {
+                    resultDiv.innerHTML = `<span class='text-danger'>${data.error}</span>`;
+                    return;
+                }
+
+                const changeColor = data.change >= 0 ? "text-success" : "text-danger";
+                const arrow = data.change >= 0 ? "▲" : "▼";
+
+                resultDiv.innerHTML = `
+                    <h4 class="fw-bold">${data.symbol}</h4>
+                    <h5>$${data.price}</h5>
+                    <p class="${changeColor} fw-bold">
+                        ${arrow} ${data.change} (${data.change_percent}%)
+                    </p>
+                `;
+            } catch (err) {
+                console.error(err);
+                resultDiv.innerHTML = "<span class='text-danger'>❌ Error fetching quote</span>";
+            }
+        }
+        </script>
+
+</body>
+</html>
