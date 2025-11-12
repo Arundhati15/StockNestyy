@@ -141,7 +141,7 @@ Feel free to modify and extend it for learning purposes.
 
 ## 👩‍💻 Author
 
-Developed with ❤️ using **Django**, **yfinance**, and **Chart.js**.
+Developed with  using **Django**, **yfinance**, and **Chart.js**.
 
 ---
 
