@@ -47,88 +47,109 @@ Django Auth → user management
 
 ---
 
-⚙️ Installation
 
-Clone the repository:
+## ⚙️ Installation
+
+### Clone the repository
+
 ```bash
 git clone https://github.com/Arundhati15/StockNestyy.git
 cd stocknestyy
+```
 
-Create & activate a virtual environment
+### Create & activate a virtual environment
+
+```bash
 python -m venv venv
 source venv/bin/activate   # On Linux/Mac
 venv\Scripts\activate      # On Windows
+```
 
-Install dependencies
+### Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-Apply migrations
+### Apply migrations
+
+```bash
 python manage.py migrate
+```
 
-Run the development server
+### Run the development server
+
+```bash
 python manage.py runserver
+```
 
-Open in browser
-http://127.0.0.1:8000/
+### Open in browser
 
-
-👤 Usage
-
-Sign up or log in to manage your personal watchlist.
-
-Add your favorite stocks and track live performance.
-
-Use Quick Quote for instant stock lookups.
-
-View interactive stock charts for trends and analysis.
-
-Stay updated with auto-rotating market news.
-
-📷 Screenshots
-
-### 🏠 Homepage
-![Homepage](screenshots/home.png)
-
-### 📊 Watchlist
-![Watchlist](screenshots/watchlist.png)
-
-### 📈 Chart Section
-![Stock Chart](screenshots/chart.png)
- 
-### 🎯 Quick Quote
-![QuickQuote](screenshots/quickquote.png)
-
-### 🔐 Signup
-![Signup](screenshots/signup.png)
-
-
-
-📌 Notes
-
-This project is for personal or portfolio use only.
-
-Feel free to modify and extend it for learning purposes.
-
-
-🧠 Future Enhancements
-
-Historical data analysis
-
-Dark mode toggle
-
-REST API endpoints (Django REST Framework)
-
-Email alerts for price changes
-
-👩‍💻 Author
-
-Developed with using Django, yfinance, and Chart.js.
+👉 [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ---
 
-## 📦 **requirements.txt**
+## 👤 Usage
+
+* Sign up or log in to manage your personal watchlist.
+* Add your favorite stocks and track live performance.
+* Use **Quick Quote** for instant stock lookups.
+* View **interactive stock charts** for trends and analysis.
+* Stay updated with **auto-rotating market news**.
+
+---
+
+## 📷 Screenshots
+
+### 🏠 Homepage
+
+![Homepage](screenshots/home.png)
+
+### 📊 Watchlist
+
+![Watchlist](screenshots/watchlist.png)
+
+### 📈 Chart Section
+
+![Stock Chart](screenshots/chart.png)
+
+### 🎯 Quick Quote
+
+![QuickQuote](screenshots/quickquote.png)
+
+### 🔐 Signup
+
+![Signup](screenshots/signup.png)
+
+---
+
+## 📌 Notes
+
+This project is for personal or portfolio use only.
+Feel free to modify and extend it for learning purposes.
+
+---
+
+## 🧠 Future Enhancements
+
+* Historical data analysis
+* Dark mode toggle
+* REST API endpoints (Django REST Framework)
+* Email alerts for price changes
+
+---
+
+## 👩‍💻 Author
+
+Developed with ❤️ using **Django**, **yfinance**, and **Chart.js**.
+
+---
+
+## 📦 Requirements
 
 ```txt
 Django>=5.0,<6.0
 yfinance>=0.2.40
 requests>=2.32.0
+```
+
