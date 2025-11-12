@@ -1,0 +1,44 @@
+{% extends 'stock_app/base.html' %}
+{% block content %}
+<div class="container text-center mt-4">
+    <h1>{{ symbol }} - 30 Day Price Chart</h1>
+
+    <form method="get" action="">
+        <input type="text" name="symbol" placeholder="Enter symbol (e.g., AAPL)" />
+        <button type="submit">Show Chart</button>
+    </form>
+
+    <div class="mt-4">
+        <canvas id="stockChart" width="800" height="400"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('stockChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ dates|safe }},
+            datasets: [{
+                label: '{{ symbol }} Closing Prices',
+                data: {{ prices|safe }},
+                borderColor: '#fff',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: false,
+                pointRadius: 2,
+            }]
+        },
+        options: {
+            scales: {
+                x: { ticks: { color: '#fff' } },
+                y: { ticks: { color: '#fff' } }
+            },
+            plugins: {
+                legend: { labels: { color: '#fff' } }
+            }
+        }
+    });
+</script>
+{% endblock %}

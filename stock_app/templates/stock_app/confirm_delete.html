@@ -1,0 +1,20 @@
+{% extends 'stock_app/base.html' %}
+{% block title %}Confirm Delete{% endblock %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="col-md-6">
+    <div class="card border-0 shadow-lg rounded-3">
+      <div class="card-body p-4 text-center">
+        <h3 class="mb-4" style="color:#7B2FF7;">Delete Confirmation</h3>
+        <p>Are you sure you want to delete <strong>{{ stock.symbol }}</strong> from your watchlist?</p>
+        
+        <form method="post">
+          {% csrf_token %}
+          <button class="btn btn-danger me-2" type="submit">Yes, Delete</button>
+          <a class="btn btn-secondary" href="{% url 'watchlist' %}">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

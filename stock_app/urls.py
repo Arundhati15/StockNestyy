@@ -24,5 +24,11 @@ urlpatterns = [
     path('stock/<str:symbol>/', views.stock_detail, name='stock_detail'),
     path('get_stock_data/', views.get_stock_data, name='get_stock_data'),  # single symbol (you already added earlier)
     path('api/quotes/', views.api_quotes, name='api_quotes'),             # multi-symbol (for watchlist)
-    path('api/history/', views.api_history, name='api_history'),          # for charts
+    path('api/history/', views.api_history, name='api_history'),    
+    path('chart/', views.stock_chart, name='stock_chart'),      # for charts
+    path('chart_search/', views.chart_search, name='chart_search'),
+
+
+
+
 ]

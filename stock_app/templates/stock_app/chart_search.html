@@ -1,0 +1,15 @@
+{% extends 'stock_app/base.html' %}
+
+
+{% block content %}
+<div class="container mt-4">
+  <h2>📈 View Stock Chart</h2>
+  <form method="get" action="{% url 'stock_chart' %}">
+    <div class="form-group mb-3">
+      <label for="symbol">Enter Stock Symbol:</label>
+      <input type="text" name="symbol" id="symbol" class="form-control" placeholder="e.g. AAPL, TSLA, MSFT" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Show Chart</button>
+  </form>
+</div>
+{% endblock %}

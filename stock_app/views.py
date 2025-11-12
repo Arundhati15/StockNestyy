@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import StockForm, SignUpForm
 from .models import Stock
 import yfinance as yf
+import json
 
 # ---- Pages ----
 def index(request):
@@ -93,7 +94,7 @@ def signup_view(request):
             messages.error(request, "Please correct the error below.")
     else:
         form = UserCreationForm()
-    return render(request, "stock_app/signup.html", {"form": form})
+    return render(request, "registration/signup.html", {"form": form})
 
 # Login View
 def login_view(request):
@@ -110,12 +111,12 @@ def login_view(request):
             messages.error(request, "Invalid username or password")
     else:
         form = AuthenticationForm()
-    return render(request, "stock_app/login.html", {"form": form})
+    return render(request, "registration/login.html", {"form": form})
 
 # Logout View
 def logout_view(request):
     logout(request)
-    return redirect("login")
+    return redirect("home")
 
 # ---- APIs ----
 def get_stock_data(request):
@@ -211,3 +212,28 @@ def quick_quote(request):
         })
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+
+
+
+
+def stock_chart(request):
+    symbol = request.GET.get('symbol', 'AAPL')  # default AAPL if none entered
+    data = yf.download(symbol, period="1mo", interval="1d")
+
+    dates = data.index.strftime('%Y-%m-%d').tolist()
+    prices = data['Close'].squeeze().round(2).tolist()
+    
+    context = {
+        'symbol': symbol,
+        'dates': json.dumps(dates),
+        'prices': json.dumps(prices)
+    }
+    return render(request, 'stock_app/stock_chart.html', context)
+
+def chart_search(request):
+    return render(request, 'stock_app/chart_search.html')
+
+
+
+

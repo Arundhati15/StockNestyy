@@ -1,6 +1,24 @@
 {% extends 'stock_app/base.html' %}
 {% block title %}Sign Up{% endblock %}
+
 {% block content %}
+
+<!-- Add this style block -->
+<style>
+  .btn-violet {
+    background-color: #7B2FF7;     /* same violet as the heading */
+    color: white;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  .btn-violet:hover {
+    background-color: #5e1fd6;     /* slightly darker on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(123, 47, 247, 0.4);
+  }
+</style>
+
 <div class="col-md-5 mx-auto">
   <div class="card card-auth border-0 shadow-lg rounded-3">
     <div class="card-body p-4">
@@ -8,14 +26,12 @@
       <form method="post">
         {% csrf_token %}
 
-        <!-- Show form-wide errors -->
         {% if form.non_field_errors %}
           <div class="alert alert-danger">
             {{ form.non_field_errors }}
           </div>
         {% endif %}
 
-        <!-- Username -->
         <div class="mb-3">
           {{ form.username.label_tag }}
           {{ form.username }}
@@ -24,7 +40,6 @@
           {% endif %}
         </div>
 
-        <!-- Password 1 -->
         <div class="mb-3">
           {{ form.password1.label_tag }}
           {{ form.password1 }}
@@ -33,7 +48,6 @@
           {% endif %}
         </div>
 
-        <!-- Password 2 -->
         <div class="mb-3">
           {{ form.password2.label_tag }}
           {{ form.password2 }}
@@ -42,9 +56,13 @@
           {% endif %}
         </div>
 
+        <!-- Violet button -->
         <button class="btn btn-violet w-100" type="submit">Sign Up</button>
+
         <div class="text-center mt-3">
-          <a href="{% url 'login' %}" style="color:#7B2FF7; text-decoration:none;">Already have an account? Login</a>
+          <a href="{% url 'login' %}" style="color:#7B2FF7; text-decoration:none;">
+            Already have an account? Login
+          </a>
         </div>
       </form>
     </div>
