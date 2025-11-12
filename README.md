@@ -1,23 +1,37 @@
+📈 Stock Tracker Web App — StockNestyy
 
-📈 Stock Tracker Web App
+A **Django-based stock market tracking application** that allows users to monitor real-time stock data, manage their watchlist, and view detailed stock charts — with enhanced visuals powered by **Vanta.js fog effects** and **Chart.js** for interactive data visualization.
 
-A Django-based stock market tracking application that lets users monitor real-time stock data, manage their watchlist, and view quick quotes for any company.
+---
 
-🚀 Features
+## 🚀 Features
 
-🔑 User Authentication (Sign up, Login, Logout)
+🔑 **User Authentication**
+- Sign up, log in, and log out with Django’s built-in authentication system.
 
-📊 Personal Watchlist (Add, edit, delete stocks)
+📊 **Personal Watchlist**
+- Add, edit, and delete stocks from your personalized watchlist.
 
-⏱️ Real-Time Stock Data (powered by Yahoo Finance via yfinance)
+⏱️ **Real-Time Stock Data**
+- Fetched using [`yfinance`](https://pypi.org/project/yfinance/) (Yahoo Finance API).
+- Displays live prices, daily change, and percent difference.
 
-📰 Latest Market News (auto-switching news cards)
+📈 **Stock Chart Visualization**
+- Dynamic chart rendering using **Chart.js** for historical and live trends.
 
-⚡ Quick Quote Section – enter a company ticker (e.g., AAPL, GOOG) and instantly see live price with profit/loss in green/red
+⚡ **Quick Quote**
+- Instantly search for any company ticker (e.g., AAPL, TSLA, GOOG) and view its live price with profit/loss indicators in green/red.
 
-🎨 Modern UI/UX with glassmorphism + sticky notes style
+📰 **Latest Market News**
+- Rotating news cards with up-to-date financial headlines.
 
-🛠️ Tech Stack
+🎨 **Modern UI/UX**
+- Built with **HTML**, **CSS**, **JavaScript**, and **Bootstrap**.
+- Features **glassmorphism design**, sticky-note cards, and animated **Vanta.js Fog** backgrounds for an immersive experience.
+
+---
+
+## 🛠️ Tech Stack
 
 Backend: Django, Python
 
@@ -31,58 +45,90 @@ yfinance → stock price data
 
 Django Auth → user management
 
-📷 Screenshots
-
-
-
+---
 
 ⚙️ Installation
 
 Clone the repository:
+```bash
+git clone https://github.com/Arundhati15/StockNestyy.git
+cd stocknestyy
 
-git clone https://github.com/your-username/stock-tracker.git
-cd stock-tracker
-
-
-Create & activate a virtual environment:
-
+Create & activate a virtual environment
 python -m venv venv
 source venv/bin/activate   # On Linux/Mac
 venv\Scripts\activate      # On Windows
 
-
-Install dependencies:
-
+Install dependencies
 pip install -r requirements.txt
 
-
-Run migrations:
-
+Apply migrations
 python manage.py migrate
 
-
-
-Start the development server:
-
+Run the development server
 python manage.py runserver
 
-
-Open in browser:
-
+Open in browser
 http://127.0.0.1:8000/
+
 
 👤 Usage
 
-Sign up / Log in to manage your personal watchlist.
+Sign up or log in to manage your personal watchlist.
 
-Add stocks to your watchlist and track their real-time performance.
+Add your favorite stocks and track live performance.
 
-Quick Quote to instantly check the latest price of any company.
+Use Quick Quote for instant stock lookups.
 
-News section keeps you updated with rotating financial headlines.
+View interactive stock charts for trends and analysis.
+
+Stay updated with auto-rotating market news.
+
+📷 Screenshots
+
+### 🏠 Homepage
+![Homepage](screenshots/home.png)
+
+### 📊 Watchlist
+![Watchlist](screenshots/watchlist.png)
+
+### 📈 Chart Section
+![Stock Chart](screenshots/chart.png)
+ 
+### 🎯 Quick Quote
+![QuickQuote](screenshots/quickquote.png)
+
+### 🔐 Signup
+![Signup](screenshots/signup.png)
+
+
 
 📌 Notes
 
-This project is for personal / portfolio use only.
+This project is for personal or portfolio use only.
 
-Do not use or distribute without explicit permission.
+Feel free to modify and extend it for learning purposes.
+
+
+🧠 Future Enhancements
+
+Historical data analysis
+
+Dark mode toggle
+
+REST API endpoints (Django REST Framework)
+
+Email alerts for price changes
+
+👩‍💻 Author
+
+Developed with using Django, yfinance, and Chart.js.
+
+---
+
+## 📦 **requirements.txt**
+
+```txt
+Django>=5.0,<6.0
+yfinance>=0.2.40
+requests>=2.32.0
